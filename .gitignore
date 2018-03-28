@@ -1,6 +1,7 @@
 # Prerequisites
 CMakeLists.txt
 cmake-build-debug/
+.idea
 
 *.d
 
