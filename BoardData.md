@@ -34,12 +34,19 @@ Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwi
 ```
 
 ## BU__views
+
 **Input**
+
 VIEWS (number 0-26) - iteration through 9*3 possible views (all columns, rows and boxes)
+
 POINTS_PER_VIEW (number 0-8) - represents elements inside each VIEWS group
+
 **Output**
+
 array position of each individual element
+
 **Description**
+
 our board described as array with indexes (0-80)
 
 ```
