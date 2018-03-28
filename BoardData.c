@@ -1,5 +1,5 @@
-#include "bd.h"
-#include "bu.h"
+#include "BoardData.h"
+#include "BoardUtils.h"
 #include <stdio.h>
 
 void BD_boardDataInit(BoardData *bd, const char *board) {

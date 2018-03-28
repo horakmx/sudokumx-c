@@ -1,4 +1,4 @@
-#include "bd.h"
+#include "BoardData.h"
 //s#include <malloc.h>
 #include <string.h>
 

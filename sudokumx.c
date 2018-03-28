@@ -1,6 +1,6 @@
-#include "bu.h" // board utils
-#include "bd.h" // board data
-#include "bs.h" // board solver
+#include "BoardUtils.h"  // board utils
+#include "BoardData.h"   // board data
+#include "BoardSolver.h" // board solver
 #include "runner.h"
 extern int guess;
 int main(int argc, char *argv[])

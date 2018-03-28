@@ -1,4 +1,4 @@
-#include "bs.h"
+#include "BoardSolver.h"
 #include <stdio.h>
 #include <stdlib.h>
 
