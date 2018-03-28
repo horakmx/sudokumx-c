@@ -3,7 +3,7 @@ Board Utils
 prepared bitmaps and other shortcuts to count bits or trigger specific positions in array
 everything is build for Sudoku of size 9 x 9
 
-```
+```c
 #pragma once
 #define CONST                   const // Faster without const keyword on some compilers
 #define POINTS                     81
@@ -38,6 +38,8 @@ POINTS_PER_VIEW (number 0-8) - represents elements inside each VIEWS group
 array position of each individual element
 **Description**
 our board described as array with indexes (0-80)
+
+```
 [
    0,  1,  2,  3,  4,  5,  6,  7,  8,
    9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -49,8 +51,12 @@ our board described as array with indexes (0-80)
   63, 64, 65, 66, 67, 68, 69, 70, 71,
   72, 73, 74, 75, 76, 77, 78, 79, 80
 ]
+```
+
 than we can map each VIEWS set to this board
 **Example**
+
+```
 { 30, 31, 32, 39, 40, 41, 48, 49, 50 } => VIEW of centered box
 [
     ,   ,   ,   ,   ,   ,   ,   ,   ,
@@ -64,6 +70,8 @@ than we can map each VIEWS set to this board
     ,   ,   ,   ,   ,   ,   ,   ,   ,
 ]
 ```
+
+```c
 static CONST unsigned char BU__views[VIEWS][POINTS_PER_VIEW] = {
 	{ 0,  9, 18, 27, 36, 45, 54, 63, 72 },
 	{ 0,  1,  2,  3,  4,  5,  6,  7,  8 },
@@ -106,7 +114,7 @@ bit map - representing bit position
 Used for unsetting resolved numbers
 Example
 TODO
-```
+```c
 static CONST unsigned short BU__viewsReversed[POINTS][VIEWS_PER_POINT] = {
 	{ 1,  1,  1 },
 	{ 2,  2,  1 },
@@ -201,7 +209,7 @@ specific VIEW
 **Description**
 Complementary to BU__views
 Each point is falling into three VIEWS (column, row and box) and this is back reference to BU__views
-```
+```c
 static CONST unsigned char BU__points[POINTS][VIEWS_PER_POINT] = {
 	{ 0,  1,  2 },
 	{ 1,  2,  3 },
@@ -295,6 +303,8 @@ REF_POINTS (number 0-19) - represents related points for each point index
 reference to related point
 **Description**
 our board described as array with indexes (0-80)
+
+```
 [
    0,  1,  2,  3,  4,  5,  6,  7,  8,
    9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -306,9 +316,12 @@ our board described as array with indexes (0-80)
   63, 64, 65, 66, 67, 68, 69, 70, 71,
   72, 73, 74, 75, 76, 77, 78, 79, 80
 ]
+```
+
 than we can map each POINTS set to this board
 **Examples**
 Example 1 -> for POINT 0 (symbolized as @)
+```
 { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 27, 36, 45, 54, 63, 72 },
 [
    @,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -335,6 +348,8 @@ Example 2 -> for POINT 40 (symbolized as @)
     ,   ,   ,   , 76,   ,   ,   ,   ,
 ]
 ```
+
+```c
 static CONST unsigned char BU__refPoints[POINTS][REF_POINTS] = {
 	{ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 27, 36, 45, 54, 63, 72 },
 	{ 0,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 28, 37, 46, 55, 64, 73 },
@@ -445,6 +460,7 @@ confirmation - which single! bit (position) is set
 Used typically for detection on which single position is specific number available for instant-solving
 Or could be used for detection which candidate (1,2,3,4,5,6,7,8,9) is only possible in specific position
 **Example**
+```
 num  =>   bitmap   =>  confirmation about single bit position
  0  =>          0 =>    00  - nothing
  1  =>          1 =>     0  - first position is set (index starting at 0)
@@ -454,6 +470,8 @@ num  =>   bitmap   =>  confirmation about single bit position
 ...
 512  => 1000000000 =>     9  - tenth position is set (index starting at 0)
 ```
+
+```c
 static CONST unsigned char BU__bitPositions[PREPARED_BIT_TO_DIGIT] = {
 	00,  0,  1, 00,  2, 00, 00, 00,  3, 00, 00, 00, 00, 00, 00, 00,  4, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
 	5, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
@@ -483,6 +501,7 @@ PREPARED_INT_TO_BIT_SIZE (number 0-1023) - represents bitmap 0000000000-11111111
 counter - how many bits are set
 **Description**
 **Example**
+```
 num  =>   bitmap   =>  how many bits are set
   0  =>          0 =>     0
   1  =>          1 =>     1
@@ -492,6 +511,8 @@ num  =>   bitmap   =>  how many bits are set
 ....
 1023  => 1111111111 =>    10
 ```
+
+```c
 static CONST unsigned char BU__bitCount[PREPARED_INT_TO_BIT_SIZE] = {
 	0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
 	1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
@@ -536,6 +557,7 @@ LOCKED_CANDIDATE_SET_SIZE (number 0-14) - represents elements inside each LOCKED
 array position of each individual element
 **Description**
 our board described as array with indexes (0-80)
+```
 [
    0,  1,  2,  3,  4,  5,  6,  7,  8,
    9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -547,12 +569,14 @@ our board described as array with indexes (0-80)
   63, 64, 65, 66, 67, 68, 69, 70, 71,
   72, 73, 74, 75, 76, 77, 78, 79, 80
 ]
+```
 than we can map each LOCKED_CANDIDATES set to this board
 Hidden information - you have to know that:
 first 3 elements in set we use as group A
 next 6 elements as group B
 remaining 6 elements as group C
 **Example**
+```
 { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20 }
   A   A   A   B   B   B   B   B   B   C   C   C   C   C   C
 first group of LOCKED_CANDIDATES
@@ -581,6 +605,8 @@ elements of group A+B+C and do easy mathematical operations with this subsets
     ,   ,   ,   ,   ,   ,   ,   ,   ,
 ]
 ```
+
+```c
 static CONST unsigned char BU__lockedCandidates[LOCKED_CANDIDATES][LOCKED_CANDIDATE_SET_SIZE] = {
 	{ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20 },
 	{ 0,  9, 18, 27, 36, 45, 54, 63, 72,  1,  2, 10, 11, 19, 20 },
