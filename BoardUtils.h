@@ -1,8 +1,23 @@
 /**
    Board Utils
    ===========
-   prepared bitmaps and other shortcuts to count bits or trigger specific positions in array
-   everything is build for Sudoku of size 9 x 9
+   BoardUtils.h stores prepared array maps, bit maps and reverse maps
+   to help traverse sudoku board more efficiently and transparently.
+   These maps are frequently used in BoardData.c and BoardSolver.c
+
+   What excatly we can do with this maps?
+   For example to count bits (choises) in specific situations
+   or trigger specific positions in array, so we don't need to write
+   each cycle manualy in further code
+   (no need to traverse rows, columns, boxes manualy
+    and no need to check borders of this traverse)
+
+   Everything below is built for Sudoku of size 9 x 9
+   so this maps basically hardwires 9 x 9 board solution.
+   It's possible to change completely this maps
+   to for example solutions of size 16 x 16,
+   but as sudoku board rises it will be extremly challanging
+   or impossible with current code.
  */
 
 #pragma once
