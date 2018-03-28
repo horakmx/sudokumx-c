@@ -1,7 +1,10 @@
 Board Utils
 ===========
-prepared bitmaps and other shortcuts to count bits or trigger specific positions in array
-everything is build for Sudoku of size 9 x 9
+BoardUtils.h stores prepared array maps, bit maps and reverse maps to help traverse sudoku board more efficiently and transparently. These maps are frequently used in BoardData.c and BoardSolver.c
+
+What excatly we can do with this maps? For example to count bits (choises) in specific situations or trigger specific positions in array, so we don't need to write each cycle manualy in further code (no need to traverse rows, columns, boxes manualy and no need to check borders of this traverse)
+
+Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwires 9 x 9 board solution. It's possible to change completely this maps to for example solutions of size 16 x 16, but as sudoku board rises it will be extremly challanging or impossible with current code.
 
 ```c
 #pragma once
@@ -320,8 +323,8 @@ our board described as array with indexes (0-80)
 
 than we can map each POINTS set to this board
 **Examples**
-Example 1 -> for POINT 0 (symbolized as @)
 ```
+Example 1 -> for POINT 0 (symbolized as @)
 { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 27, 36, 45, 54, 63, 72 },
 [
    @,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -447,7 +450,7 @@ Then this map is used for binary operation
 **Example**
 How to know that 6th bit is set in this number (bitmap): 0110111100 ?
 number & BU__digits(6) => False (0) or True (>0)
-```
+```c
 static CONST unsigned short BU__digits[DIGITS_OFFSETTED] = { 00, 2, 4, 8, 16, 32, 64, 128, 256, 512 };
 ```
 
