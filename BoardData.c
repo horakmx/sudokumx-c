@@ -4,7 +4,6 @@
 
 void BD_boardDataInit(BoardData *bd, const char *board) {
 	bd->remainingPointsCount = POINTS;
-	bd->viewsToCheckCount = VIEWS;
 	bd->isInvalid = 0;
 	for (int i = 0; i < VIEWS; i++) {
 		bd->viewsToCheck[i] = 0xFF;
@@ -32,8 +31,6 @@ void BD_boardDataInit(BoardData *bd, const char *board) {
 			BD_setPoint(bd, i, bd->board[i]);
 		}
 	}
-	// BD_printBoard(bd);
-	// BD_printBoardExplain(bd, 0xFFFF);
 }
 
 void BD_unsetPointPossibles(BoardData *bd, unsigned char pointIndex, unsigned short bitGroup) {
@@ -77,9 +74,6 @@ void BD_setPoint(BoardData *bd, unsigned char pointIndex, unsigned char digit) {
 	for (int i = 0; i < VIEWS_PER_POINT; i++) {
 		unsigned char viewId = BU__points(pointIndex, i);
 		bd->viewsPossibles[viewId] &= ~bit;
-		// if (bd->viewsPossibles[viewId] == 0) {
-		//	unset bd->viewsToCheck[viewId]
-		// }
 	}
 	BD_unsetPointPossibles(bd, pointIndex, bd->pointPossibles[pointIndex]);
 	bd->pointPossibles[pointIndex] = 0;
@@ -102,121 +96,4 @@ int BD_isBoardSolved(BoardData *bd) {
 		}
 	}
 	return 1;
-}
-
-int BD_validateStartingBoard(unsigned char *board) {
-
-	if (strlen(board) != POINTS)
-	{
-		// echo "invalid size of board"
-		return 0;
-	}
-	int setCount = 0;
-	for (int i = 0; i < POINTS; i++) {
-		unsigned char cel = board[i];
-		if (cel == 0) continue;
-		// at least 17 cels is set
-		if (++setCount > 16)
-		{
-			return 1;
-		}
-	}
-	// echo "INPUT ERROR: Invalid board, <= 16 set cells\n";
-	return 0;
-}
-
-void BD_printBoard(BoardData *bd) {
-	printf("\n");
-	for (int i = 0; i < 9; i++)	{
-		char extraRowClass[26] = "";
-		if (!((i + 1) % 3) && i < 7) {
-			sprintf(extraRowClass, "\n-------+-------+-------");
-		}
-		for (int d = 0; d < 9; d++) {
-			int pos = i * 9 + d;
-			char extraClass[3] = "";
-			if (!((d + 1) % 3) && d < 7) {
-				sprintf(extraClass, " |");
-			}
-			char piece = bd->board[pos];
-			if (piece == 0)
-			{
-				piece = '.';
-			} else {
-				piece += 48;
-			}
-			printf(" %c%s", piece, extraClass);
-		}
-		printf("%s\n", extraRowClass);
-	}
-	printf("\n");
-}
-
-const char *intToBin(int x)
-{
-	static char b[33];
-	b[0] = '\0';
-
-	int z;
-	for (z = 512; z > 0; z >>= 1)
-	{
-		strcat(b, ((x & z) == z) ? "1" : "0");
-	}
-
-	return b;
-}
-	
-void BD_printDigits(BoardData *bd) {
-	for (int d = 1; d < DIGITS_OFFSETTED; d++) {
-		printf("Digit = %d\n", d);
-		for (int v = 0; v < VIEWS; v++) {
-			printf("view: %d = %s\n", v, intToBin(bd->viewsDigitsPossibles[d][v]));
-		}
-	}
-}
-
-void BD_printBoardExplain(BoardData *bd, int filter) {
-	int pc = 0;
-	char board[9][9][3][3];
-	for (int i = 0; i < 9; i++) {
-		for (int d = 0; d < 9; d++) {
-			int pos = i * 9 + d;
-			for (int x = 0; x < 9; x++) {
-				char p = (bd->pointPossibles[pos] & BU__digits(x+1) & filter) ? (x + 1 + 48) : ' ';
-				if (p != ' ')
-				{
-					pc++;
-				}
-				board[i][d][x / 3][x % 3] = p;
-			}
-		}
-	}
-	printf("\n");
-	for (int i = 0; i < 9; i++) {
-		for (int x = 0; x < 3; x++)
-		{
-			printf(" ");
-			for (int d = 0; d < 9; d++) {
-				char colDelim[4] = "|";
-				if (!((d + 1) % 3)) {
-					sprintf(colDelim, "|| ");
-				}
-				for (int y = 0; y < 3; y++) {
-					printf("%c ", board[i][d][x][y]);
-				}
-				printf("%s ", colDelim);
-			}
-			printf("\n");
-		}
-		char rowDelim[40] = "-------+-------+-------++ ";
-		if (!((i + 1) % 3)) {
-			sprintf(rowDelim, "=======+=======+=======++ ");
-		}
-		printf("%s%s%s\n", rowDelim, rowDelim, rowDelim);
-		if (!((i + 1) % 3))
-		{
-			printf("\n");
-		}
-	}
-	printf("possibles count: %d\n", pc);
 }
