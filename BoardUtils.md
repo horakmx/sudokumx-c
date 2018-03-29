@@ -1,11 +1,19 @@
 Board Utils
 ===========
-BoardUtils.h stores prepared array maps, bit maps and reverse maps to help traverse sudoku board more efficiently and transparently. These maps are frequently used in BoardData.c and BoardSolver.c
+BoardUtils.h stores prepared array maps, bit maps and reverse maps
+to help traverse sudoku board more efficiently and transparently.
+These maps are frequently used in BoardData.c and BoardSolver.c
 
 What excatly we can do with this maps?\
-For example we can count bits (choises) in specific situations or trigger specific positions in array, so we don't need to write each cycle manualy in further code (no need to traverse rows, columns, boxes manualy and no need to check borders of this traverse)
+For example we can count bits (choises) in specific situations
+or trigger specific positions in array, so we don't need
+to write each cycle manualy in further code (no need to traverse
+rows, columns, boxes manualy and no need to check borders of this traverse)
 
-Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwires 9 x 9 board solution. It's possible to change completely this maps to work with board size 16 x 16, but as sudoku board rises it will be extremly challanging or impossible with current code.
+Everything below is built for Sudoku of size 9 x 9 so this maps basically
+hardwires 9 x 9 board solution. It's possible to change completely
+this maps to work with board size 16 x 16, but as sudoku board rises
+it will be extremly challanging or impossible with current code.
 
 **Code:**
 ```c
@@ -503,18 +511,14 @@ static CONST unsigned char BU__refPoints[POINTS][REF_POINTS] = {
 **Output**
 - bitmap - NULL / 0000000010 - 1000000000
 
-**Description**
-
-This is complementary map to BU__bitPositions
-
-Used typically for iterating through 1-9 and instantly translating to map with lowest possible instructions
-
+**Description**\
+This is complementary map to BU__bitPositions\
+Used typically for iterating through 1-9 and instantly
+translating to map with lowest possible instructions\
 Then this map is used for binary operation
 
-**Example**
-
-How to know that 6th bit is set in this number (bitmap): 0110111100 ?
-
+**Example**\
+How to know that 6th bit is set in this number (bitmap): 0110111100 ?\
 number & BU__digits(6) => False (0) or True (>0)
 
 **Code:**
@@ -530,10 +534,11 @@ static CONST unsigned short BU__digits[DIGITS_OFFSETTED] = { 00, 2, 4, 8, 16, 32
 **Output**
 - confirmation - which single! bit (position) is set
 
-**Description**
-
-Used typically for detection on which single position is specific number available for instant-solving.
-Or could be used for detection which candidate (1,2,3,4,5,6,7,8,9) is only possible in specific position
+**Description**\
+Used typically for detection on which single position
+is specific number available for instant-solving.\
+Or could be used for detection which candidate
+(1,2,3,4,5,6,7,8,9) is only possible in specific position
 
 **Example**
 ```
@@ -633,41 +638,45 @@ static CONST unsigned char BU__bitCount[PREPARED_INT_TO_BIT_SIZE] = {
 ```
 
 ## BU__lockedCandidates
+
 **Input**
-LOCKED_CANDIDATES (number 0-53) - iteration through 9*3*2 different combinations
-LOCKED_CANDIDATE_SET_SIZE (number 0-14) - represents elements inside each LOCKED_CANDIDATES group
+- LOCKED_CANDIDATES (number 0-53) - iteration through 9*3*2 different combinations
+- LOCKED_CANDIDATE_SET_SIZE (number 0-14) - represents elements inside each LOCKED_CANDIDATES group
+
 **Output**
-array position of each individual element
-**Description**
+- array position of each individual element
+
+**Description**\
 our board described as array with indexes (0-80)
 ```
 [
 [
    0,   1,   2,   3,   4,   5,   6,   7,   8,
-   
+
    9,  10,  11,  12,  13,  14,  15,  16,  17,
-   
+
   18,  19,  20,  21,  22,  23,  24,  25,  26,
-  
+
   27,  28,  29,  30,  31,  32,  33,  34,  35,
-  
+
   36,  37,  38,  39,  40,  41,  42,  43,  44,
-  
+
   45,  46,  47,  48,  49,  50,  51,  52,  53,
-  
+
   54,  55,  56,  57,  58,  59,  60,  61,  62,
-  
+
   63,  64,  65,  66,  67,  68,  69,  70,  71,
-  
+
   72,  73,  74,  75,  76,  77,  78,  79,  80
 ]
 ]
 ```
-than we can map each LOCKED_CANDIDATES set to this board
-Hidden information - you have to know that:
-first 3 elements in set we use as group A
-next 6 elements as group B
+than we can map each LOCKED_CANDIDATES set to this board\
+Hidden information - you have to know that:\
+first 3 elements in set we use as group A\
+next 6 elements as group B\
 remaining 6 elements as group C
+
 **Example**
 ```
 { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20 }
@@ -675,44 +684,44 @@ remaining 6 elements as group C
 first group of LOCKED_CANDIDATES
 [
    0,   1,   2,   3,   4,   5,   6,   7,   8,
-   
+
    9,  10,  11,    ,    ,    ,    ,    ,    ,
-   
+
   18,  19,  20,    ,    ,    ,    ,    ,    ,
-   
-    ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
-    ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
 
     ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
 ]
 then we can use simplified further code to work with
 elements of group A+B+C and do easy mathematical operations with this subsets
 [
    A,   A,   A,   B,   B,   B,   B,   B,   B,
-   
+
    C,   C,   C,    ,    ,    ,    ,    ,    ,
-   
+
    C,   C,   C,    ,    ,    ,    ,    ,    ,
-   
-    ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
-    ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
 
     ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
     ,    ,    ,    ,    ,    ,    ,    ,    ,
-    
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
 ]
 ```
 
