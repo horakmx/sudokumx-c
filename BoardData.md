@@ -2,10 +2,12 @@ Board Utils
 ===========
 BoardUtils.h stores prepared array maps, bit maps and reverse maps to help traverse sudoku board more efficiently and transparently. These maps are frequently used in BoardData.c and BoardSolver.c
 
-What excatly we can do with this maps? For example to count bits (choises) in specific situations or trigger specific positions in array, so we don't need to write each cycle manualy in further code (no need to traverse rows, columns, boxes manualy and no need to check borders of this traverse)
+What excatly we can do with this maps?\
+For example we can count bits (choises) in specific situations or trigger specific positions in array, so we don't need to write each cycle manualy in further code (no need to traverse rows, columns, boxes manualy and no need to check borders of this traverse)
 
-Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwires 9 x 9 board solution. It's possible to change completely this maps to for example solutions of size 16 x 16, but as sudoku board rises it will be extremly challanging or impossible with current code.
+Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwires 9 x 9 board solution. It's possible to change completely this maps to work with board size 16 x 16, but as sudoku board rises it will be extremly challanging or impossible with current code.
 
+**Code:**
 ```c
 #pragma once
 #define CONST                   const // Faster without const keyword on some compilers
@@ -36,51 +38,60 @@ Everything below is built for Sudoku of size 9 x 9 so this maps basically hardwi
 ## BU__views
 
 **Input**
-
-VIEWS (number 0-26) - iteration through 9*3 possible views (all columns, rows and boxes)
-
-POINTS_PER_VIEW (number 0-8) - represents elements inside each VIEWS group
+- VIEWS (number 0-26) - iteration through 9*3 possible views (all columns, rows and boxes).
+- POINTS_PER_VIEW (number 0-8) - represents elements inside each VIEWS group
 
 **Output**
-
-array position of each individual element
+- Array position of each individual element
 
 **Description**
-
+```
 our board described as array with indexes (0-80)
-
-```
 [
-   0,  1,  2,  3,  4,  5,  6,  7,  8,
-   9, 10, 11, 12, 13, 14, 15, 16, 17,
-  18, 19, 20, 21, 22, 23, 24, 25, 26,
-  27, 28, 29, 30, 31, 32, 33, 34, 35,
-  36, 37, 38, 39, 40, 41, 42, 43, 44,
-  45, 46, 47, 48, 49, 50, 51, 52, 53,
-  54, 55, 56, 57, 58, 59, 60, 61, 62,
-  63, 64, 65, 66, 67, 68, 69, 70, 71,
-  72, 73, 74, 75, 76, 77, 78, 79, 80
+   0,   1,   2,   3,   4,   5,   6,   7,   8,
+   
+   9,  10,  11,  12,  13,  14,  15,  16,  17,
+   
+  18,  19,  20,  21,  22,  23,  24,  25,  26,
+  
+  27,  28,  29,  30,  31,  32,  33,  34,  35,
+  
+  36,  37,  38,  39,  40,  41,  42,  43,  44,
+  
+  45,  46,  47,  48,  49,  50,  51,  52,  53,
+  
+  54,  55,  56,  57,  58,  59,  60,  61,  62,
+  
+  63,  64,  65,  66,  67,  68,  69,  70,  71,
+  
+  72,  73,  74,  75,  76,  77,  78,  79,  80
 ]
-```
-
 than we can map each VIEWS set to this board
+```
 **Example**
-
 ```
 { 30, 31, 32, 39, 40, 41, 48, 49, 50 } => VIEW of centered box
 [
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   , 30, 31, 32,   ,   ,   ,
-    ,   ,   , 39, 40, 41,   ,   ,   ,
-    ,   ,   , 48, 49, 50,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,  30,  31,  32,    ,    ,    ,
+    
+    ,    ,    ,  39,  40,  41,    ,    ,    ,
+    
+    ,    ,    ,  48,  49,  50,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
 ]
 ```
-
+**Code:**
 ```c
 static CONST unsigned char BU__views[VIEWS][POINTS_PER_VIEW] = {
 	{ 0,  9, 18, 27, 36, 45, 54, 63, 72 },
@@ -113,17 +124,22 @@ static CONST unsigned char BU__views[VIEWS][POINTS_PER_VIEW] = {
 };
 ```
 
-
 ## BU__viewsReversed
+
 **Input**
-POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
-VIEWS_PER_POINT (number 0-2) - represents three types - column, row, box
+- POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
+- VIEWS_PER_POINT (number 0-2) - represents three types - column, row, box
+
 **Output**
-bit map - representing bit position
-**Description**
+- Bit map - representing bit position
+
+**Description**\
 Used for unsetting resolved numbers
-Example
+
+**Example**\
 TODO
+
+**Code:**
 ```c
 static CONST unsigned short BU__viewsReversed[POINTS][VIEWS_PER_POINT] = {
 	{ 1,  1,  1 },
@@ -211,14 +227,19 @@ static CONST unsigned short BU__viewsReversed[POINTS][VIEWS_PER_POINT] = {
 ```
 
 ## BU__points
+
 **Input**
-POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
-VIEWS_PER_POINT (number 0-2) - represents three types - column, row, box
+- POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
+- VIEWS_PER_POINT (number 0-2) - represents three types - column, row, box
+
 **Output**
-specific VIEW
-**Description**
-Complementary to BU__views
+- specific VIEW
+
+**Description**\
+Complementary to BU__views.\
 Each point is falling into three VIEWS (column, row and box) and this is back reference to BU__views
+
+**Code:**
 ```c
 static CONST unsigned char BU__points[POINTS][VIEWS_PER_POINT] = {
 	{ 0,  1,  2 },
@@ -306,59 +327,88 @@ static CONST unsigned char BU__points[POINTS][VIEWS_PER_POINT] = {
 ```
 
 ## BU__refPoints
+
 **Input**
-POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
-REF_POINTS (number 0-19) - represents related points for each point index
+- POINTS (number 0-80) - iteration through 81 possible points in 9x9 sudoku
+- REF_POINTS (number 0-19) - represents related points for each point index
+
 **Output**
-reference to related point
+- reference to related point
+
 **Description**
-our board described as array with indexes (0-80)
-
 ```
+Our board described as array with indexes (0-80)
 [
-   0,  1,  2,  3,  4,  5,  6,  7,  8,
-   9, 10, 11, 12, 13, 14, 15, 16, 17,
-  18, 19, 20, 21, 22, 23, 24, 25, 26,
-  27, 28, 29, 30, 31, 32, 33, 34, 35,
-  36, 37, 38, 39, 40, 41, 42, 43, 44,
-  45, 46, 47, 48, 49, 50, 51, 52, 53,
-  54, 55, 56, 57, 58, 59, 60, 61, 62,
-  63, 64, 65, 66, 67, 68, 69, 70, 71,
-  72, 73, 74, 75, 76, 77, 78, 79, 80
+[
+   0,   1,   2,   3,   4,   5,   6,   7,   8,
+   
+   9,  10,  11,  12,  13,  14,  15,  16,  17,
+   
+  18,  19,  20,  21,  22,  23,  24,  25,  26,
+  
+  27,  28,  29,  30,  31,  32,  33,  34,  35,
+  
+  36,  37,  38,  39,  40,  41,  42,  43,  44,
+  
+  45,  46,  47,  48,  49,  50,  51,  52,  53,
+  
+  54,  55,  56,  57,  58,  59,  60,  61,  62,
+  
+  63,  64,  65,  66,  67,  68,  69,  70,  71,
+  
+  72,  73,  74,  75,  76,  77,  78,  79,  80
 ]
+]
+Than we can map each POINTS set to this board
 ```
 
-than we can map each POINTS set to this board
 **Examples**
 ```
 Example 1 -> for POINT 0 (symbolized as @)
 { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 27, 36, 45, 54, 63, 72 },
 [
-   @,  1,  2,  3,  4,  5,  6,  7,  8,
-   9, 10, 11,   ,   ,   ,   ,   ,   ,
-  18, 19, 20,   ,   ,   ,   ,   ,   ,
-  27,   ,   ,   ,   ,   ,   ,   ,   ,
-  36,   ,   ,   ,   ,   ,   ,   ,   ,
-  45,   ,   ,   ,   ,   ,   ,   ,   ,
-  54,   ,   ,   ,   ,   ,   ,   ,   ,
-  63,   ,   ,   ,   ,   ,   ,   ,   ,
-  72,   ,   ,   ,   ,   ,   ,   ,   ,
+   @,   1,   2,   3,   4,   5,   6,   7,   8,
+   
+   9,  10,  11,    ,    ,    ,    ,    ,    ,
+   
+  18,  19,  20,    ,    ,    ,    ,    ,    ,
+  
+  27,    ,    ,    ,    ,    ,    ,    ,    ,
+  
+  36,    ,    ,    ,    ,    ,    ,    ,    ,
+  
+  45,    ,    ,    ,    ,    ,    ,    ,    ,
+  
+  54,    ,    ,    ,    ,    ,    ,    ,    ,
+  
+  63,    ,    ,    ,    ,    ,    ,    ,    ,
+  
+  72,    ,    ,    ,    ,    ,    ,    ,    ,
 ]
 Example 2 -> for POINT 40 (symbolized as @)
 { 4, 13, 22, 30, 31, 32, 36, 37, 38, 39, 41, 42, 43, 44, 48, 49, 50, 58, 67, 76 },
 [
-    ,   ,   ,   ,  4,   ,   ,   ,   ,
-    ,   ,   ,   , 13,   ,   ,   ,   ,
-    ,   ,   ,   , 22,   ,   ,   ,   ,
-    ,   ,   , 30, 31, 32,   ,   ,   ,
-  36, 37, 38, 39,  @, 41, 42, 43, 44,
-    ,   ,   , 48, 49, 50,   ,   ,   ,
-    ,   ,   ,   , 58,   ,   ,   ,   ,
-    ,   ,   ,   , 67,   ,   ,   ,   ,
-    ,   ,   ,   , 76,   ,   ,   ,   ,
+    ,    ,    ,    ,   4,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,  13,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,  22,    ,    ,    ,    ,
+    
+    ,    ,    ,  30,  31,  32,    ,    ,    ,
+    
+  36,  37,  38,  39,   @,   41,  42,  43,  44,
+  
+    ,    ,    ,  48,  49,  50,    ,    ,    ,
+    
+    ,    ,    ,    ,  58,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,  67,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,  76,    ,    ,    ,    ,
 ]
 ```
 
+**Code:**
 ```c
 static CONST unsigned char BU__refPoints[POINTS][REF_POINTS] = {
 	{ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20, 27, 36, 45, 54, 63, 72 },
@@ -446,29 +496,45 @@ static CONST unsigned char BU__refPoints[POINTS][REF_POINTS] = {
 ```
 
 ## BU__digits
+
 **Input**
-DIGITS_OFFSETTED (number 0-9) - represents bit position
+- DIGITS_OFFSETTED (number 0-9) - represents bit position
+
 **Output**
-bitmap - NULL / 0000000010 - 1000000000
+- bitmap - NULL / 0000000010 - 1000000000
+
 **Description**
+
 This is complementary map to BU__bitPositions
+
 Used typically for iterating through 1-9 and instantly translating to map with lowest possible instructions
+
 Then this map is used for binary operation
+
 **Example**
+
 How to know that 6th bit is set in this number (bitmap): 0110111100 ?
+
 number & BU__digits(6) => False (0) or True (>0)
+
+**Code:**
 ```c
 static CONST unsigned short BU__digits[DIGITS_OFFSETTED] = { 00, 2, 4, 8, 16, 32, 64, 128, 256, 512 };
 ```
 
 ## BU__bitPositions
+
 **Input**
-PREPARED_BIT_TO_DIGIT (number 0-512) - represents bitmap 0000000000-1000000000
+- PREPARED_BIT_TO_DIGIT (number 0-512) - represents bitmap 0000000000-1000000000
+
 **Output**
-confirmation - which single! bit (position) is set
+- confirmation - which single! bit (position) is set
+
 **Description**
-Used typically for detection on which single position is specific number available for instant-solving
+
+Used typically for detection on which single position is specific number available for instant-solving.
 Or could be used for detection which candidate (1,2,3,4,5,6,7,8,9) is only possible in specific position
+
 **Example**
 ```
 num  =>   bitmap   =>  confirmation about single bit position
@@ -481,6 +547,7 @@ num  =>   bitmap   =>  confirmation about single bit position
 512  => 1000000000 =>     9  - tenth position is set (index starting at 0)
 ```
 
+**Code:**
 ```c
 static CONST unsigned char BU__bitPositions[PREPARED_BIT_TO_DIGIT] = {
 	00,  0,  1, 00,  2, 00, 00, 00,  3, 00, 00, 00, 00, 00, 00, 00,  4, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00,
@@ -505,11 +572,16 @@ static CONST unsigned char BU__bitPositions[PREPARED_BIT_TO_DIGIT] = {
 
 
 ## BU__bitCount
+
 **Input**
-PREPARED_INT_TO_BIT_SIZE (number 0-1023) - represents bitmap 0000000000-1111111111
+- PREPARED_INT_TO_BIT_SIZE (number 0-1023) - represents bitmap 0000000000-1111111111
+
 **Output**
-counter - how many bits are set
+- counter - how many bits are set
+
 **Description**
+Lookup table [https://en.wikipedia.org/wiki/Hamming_weight]
+
 **Example**
 ```
 num  =>   bitmap   =>  how many bits are set
@@ -522,6 +594,7 @@ num  =>   bitmap   =>  how many bits are set
 1023  => 1111111111 =>    10
 ```
 
+**Code:**
 ```c
 static CONST unsigned char BU__bitCount[PREPARED_INT_TO_BIT_SIZE] = {
 	0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
@@ -569,15 +642,25 @@ array position of each individual element
 our board described as array with indexes (0-80)
 ```
 [
-   0,  1,  2,  3,  4,  5,  6,  7,  8,
-   9, 10, 11, 12, 13, 14, 15, 16, 17,
-  18, 19, 20, 21, 22, 23, 24, 25, 26,
-  27, 28, 29, 30, 31, 32, 33, 34, 35,
-  36, 37, 38, 39, 40, 41, 42, 43, 44,
-  45, 46, 47, 48, 49, 50, 51, 52, 53,
-  54, 55, 56, 57, 58, 59, 60, 61, 62,
-  63, 64, 65, 66, 67, 68, 69, 70, 71,
-  72, 73, 74, 75, 76, 77, 78, 79, 80
+[
+   0,   1,   2,   3,   4,   5,   6,   7,   8,
+   
+   9,  10,  11,  12,  13,  14,  15,  16,  17,
+   
+  18,  19,  20,  21,  22,  23,  24,  25,  26,
+  
+  27,  28,  29,  30,  31,  32,  33,  34,  35,
+  
+  36,  37,  38,  39,  40,  41,  42,  43,  44,
+  
+  45,  46,  47,  48,  49,  50,  51,  52,  53,
+  
+  54,  55,  56,  57,  58,  59,  60,  61,  62,
+  
+  63,  64,  65,  66,  67,  68,  69,  70,  71,
+  
+  72,  73,  74,  75,  76,  77,  78,  79,  80
+]
 ]
 ```
 than we can map each LOCKED_CANDIDATES set to this board
@@ -591,31 +674,49 @@ remaining 6 elements as group C
   A   A   A   B   B   B   B   B   B   C   C   C   C   C   C
 first group of LOCKED_CANDIDATES
 [
-   0,  1,  2,  3,  4,  5,  6,  7,  8,
-   9, 10, 11,   ,   ,   ,   ,   ,   ,
-  18, 19, 20,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
+   0,   1,   2,   3,   4,   5,   6,   7,   8,
+   
+   9,  10,  11,    ,    ,    ,    ,    ,    ,
+   
+  18,  19,  20,    ,    ,    ,    ,    ,    ,
+   
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
 ]
 then we can use simplified further code to work with
 elements of group A+B+C and do easy mathematical operations with this subsets
 [
-   A,  A,  A,  B,  B,  B,  B,  B,  B,
-   C,  C,  C,   ,   ,   ,   ,   ,   ,
-   C,  C,  C,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
-    ,   ,   ,   ,   ,   ,   ,   ,   ,
+   A,   A,   A,   B,   B,   B,   B,   B,   B,
+   
+   C,   C,   C,    ,    ,    ,    ,    ,    ,
+   
+   C,   C,   C,    ,    ,    ,    ,    ,    ,
+   
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
+    ,    ,    ,    ,    ,    ,    ,    ,    ,
+    
 ]
 ```
 
+**Code:**
 ```c
 static CONST unsigned char BU__lockedCandidates[LOCKED_CANDIDATES][LOCKED_CANDIDATE_SET_SIZE] = {
 	{ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 18, 19, 20 },
