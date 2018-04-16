@@ -39,9 +39,7 @@
 #define BU__refPoints(i1, i2)        BU__refPoints[i1][i2]
 #define BU__digits(i1)               BU__digits[i1]
 #define BU__bitPositions(i1)         BU__bitPositions[i1]
-
 #define BU__bitCount(i1)             BU__bitCount[i1]
-//#define BU__bitCount(i1)             __builtin_popcount(i1)
 #define BU__lockedCandidates(i1, i2) BU__lockedCandidates[i1][i2]
 
 
